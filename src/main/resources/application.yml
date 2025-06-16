@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: java-2-example
+
+  # 데이터베이스 연결 설정
+  datasource:
+    url: jdbc:mysql://localhost:3306/spring_db?useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # JPA 및 Hibernate 설정
+  jpa:
+    hibernate:
+      # ddl-auto: 애플리케이션 실행 시 스키마(테이블) 처리 전략
+      # none: 아무 작업도 하지 않음 (운영 환경 추천)
+      # create: 기존 테이블 삭제 후 다시 생성
+      # update: 변경된 부분만 반영
+      ddl-auto: update
+    properties:
+      hibernate:
+        # MySQL 8 버전에 맞는 Dialect(방언) 설정
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+  # 로깅 레벨 설정
+  logging:
+    level:
+      # Hibernate가 실행하는 SQL 쿼리를 DEBUG 레벨로 로그에 출력
+      org.hibernate.SQL: DEBUG
+
+  flyway:
+    enabled: true # Flyway 활성화
+    # 마이그레이션 파일 위치 지정 (기본값)
+    locations: classpath:db/migration
+
+# 내장 웹 서버 설정
+server:
+  port: 8080
+
+springdoc:
+  swagger-ui:
+    enabled: true

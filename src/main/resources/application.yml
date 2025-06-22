@@ -21,6 +21,8 @@ spring:
       hibernate:
         # MySQL 8 버전에 맞는 Dialect(방언) 설정
         dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+        highlight_sql: true
 
   flyway:
     enabled: true # Flyway 활성화

@@ -16,7 +16,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
   Optional<User> findByEmail(String email);
 
   // 특정 날짜 이후에 가입한 유저들을 이름 순으로 정렬하여 조회
-  List<User> findByCreatedAtAfterOrderByUsernameAsc(LocalDateTime dateTime);
+  List<User> findByCreatedAtAfterOrderByNameAsc(LocalDateTime dateTime);
 
   // 'name'이 같은 유저의 수를 카운트
   long countByName(String name);

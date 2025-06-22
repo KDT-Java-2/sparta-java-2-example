@@ -1,11 +1,16 @@
-package com.sparta.bootcamp.java_2_example.domain.user.entity;
+package com.sparta.bootcamp.java_2_example.domain.product.entity;
 
+import com.sparta.bootcamp.java_2_example.domain.category.entity.Category;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -16,7 +21,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.util.StringUtils;
 
 @Table
 @Entity
@@ -25,20 +29,27 @@ import org.springframework.util.StringUtils;
 @DynamicUpdate
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class User {
+public class Product {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  Long id;
+  private Long id;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "category_id")
+  private Category category;
 
   @Column(nullable = false)
-  String name;
+  private String name;
+
+  @Column(columnDefinition = "TEXT")
+  private String description;
 
   @Column(nullable = false)
-  String email;
+  private BigDecimal price;
 
   @Column(nullable = false)
-  String passwordHash;
+  private Integer stock;
 
   @Column(nullable = false, updatable = false)
   @CreationTimestamp
@@ -49,32 +60,17 @@ public class User {
   LocalDateTime updatedAt;
 
   @Builder
-  public User(
+  public Product(
+      Category category,
       String name,
-      String email,
-      String passwordHash
+      String description,
+      BigDecimal price,
+      Integer stock
   ) {
+    this.category = category;
     this.name = name;
-    this.email = email;
-    this.passwordHash = passwordHash;
-  }
-
-  public void setName(String name) {
-    if (StringUtils.hasText(name)) {
-      this.name = name;
-    }
-  }
-
-  public void setEmail(String email) {
-    if (StringUtils.hasText(email)) {
-      this.email = email;
-    }
-  }
-
-  public void setPasswordHash(String passwordHash) {
-    if (StringUtils.hasText(passwordHash)) {
-      this.passwordHash = passwordHash;
-    }
+    this.description = description;
+    this.price = price;
+    this.stock = stock;
   }
 }
-

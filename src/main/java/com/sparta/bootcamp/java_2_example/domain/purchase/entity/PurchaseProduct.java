@@ -1,11 +1,17 @@
-package com.sparta.bootcamp.java_2_example.domain.user.entity;
+package com.sparta.bootcamp.java_2_example.domain.purchase.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.sparta.bootcamp.java_2_example.domain.product.entity.Product;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -16,7 +22,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.util.StringUtils;
 
 @Table
 @Entity
@@ -25,20 +30,27 @@ import org.springframework.util.StringUtils;
 @DynamicUpdate
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class User {
+public class PurchaseProduct {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   Long id;
 
-  @Column(nullable = false)
-  String name;
+  @JsonBackReference
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "purchase_id", nullable = false)
+  Purchase purchase;
+
+  @JsonBackReference
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "product_id", nullable = false)
+  Product product;
 
   @Column(nullable = false)
-  String email;
-
+  Integer quantity;
+  
   @Column(nullable = false)
-  String passwordHash;
+  BigDecimal price;
 
   @Column(nullable = false, updatable = false)
   @CreationTimestamp
@@ -49,32 +61,16 @@ public class User {
   LocalDateTime updatedAt;
 
   @Builder
-  public User(
-      String name,
-      String email,
-      String passwordHash
+  public PurchaseProduct(
+      Purchase purchase,
+      Product product,
+      Integer quantity,
+      BigDecimal price
   ) {
-    this.name = name;
-    this.email = email;
-    this.passwordHash = passwordHash;
+    this.purchase = purchase;
+    this.product = product;
+    this.quantity = quantity;
+    this.price = price;
   }
 
-  public void setName(String name) {
-    if (StringUtils.hasText(name)) {
-      this.name = name;
-    }
-  }
-
-  public void setEmail(String email) {
-    if (StringUtils.hasText(email)) {
-      this.email = email;
-    }
-  }
-
-  public void setPasswordHash(String passwordHash) {
-    if (StringUtils.hasText(passwordHash)) {
-      this.passwordHash = passwordHash;
-    }
-  }
 }
-

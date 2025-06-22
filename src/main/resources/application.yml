@@ -22,16 +22,16 @@ spring:
         # MySQL 8 버전에 맞는 Dialect(방언) 설정
         dialect: org.hibernate.dialect.MySQL8Dialect
 
-  # 로깅 레벨 설정
-  logging:
-    level:
-      # Hibernate가 실행하는 SQL 쿼리를 DEBUG 레벨로 로그에 출력
-      org.hibernate.SQL: DEBUG
-
   flyway:
     enabled: true # Flyway 활성화
     # 마이그레이션 파일 위치 지정 (기본값)
     locations: classpath:db/migration
+
+# 로깅 레벨 설정
+logging:
+  level:
+    # Hibernate가 실행하는 SQL 쿼리를 DEBUG 레벨로 로그에 출력
+    org.hibernate.SQL: DEBUG
 
 # 내장 웹 서버 설정
 server:

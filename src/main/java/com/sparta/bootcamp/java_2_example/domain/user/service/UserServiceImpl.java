@@ -1,0 +1,12 @@
+package com.sparta.bootcamp.java_2_example.domain.user.service;
+
+import com.sparta.bootcamp.java_2_example.domain.user.entity.User;
+
+public class UserServiceImpl implements UserService {
+
+  @Override
+  public void save(User user) {
+
+  }
+
+}

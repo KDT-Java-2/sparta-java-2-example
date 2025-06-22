@@ -1,14 +1,10 @@
 package com.sparta.bootcamp.java_2_example.domain.product.entity;
 
-import com.sparta.bootcamp.java_2_example.domain.category.entity.Category;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -33,23 +29,28 @@ public class Product {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  Long id;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "category_id")
-  private Category category;
+  //TODO: 실습을  위해 임시로 주석처리
+  //@ManyToOne(fetch = FetchType.LAZY)
+  //@JoinColumn(name = "category_id")
+  //private Category category;
+
+  //TODO: 실습을 위한 임시 컬럼입니다. (실제론 이렇게 작업하면 안됩니다.)
+  @Column(nullable = false)
+  Long categoryId;
 
   @Column(nullable = false)
-  private String name;
+  String name;
 
   @Column(columnDefinition = "TEXT")
-  private String description;
+  String description;
 
   @Column(nullable = false)
-  private BigDecimal price;
+  BigDecimal price;
 
   @Column(nullable = false)
-  private Integer stock;
+  Integer stock;
 
   @Column(nullable = false, updatable = false)
   @CreationTimestamp
@@ -61,13 +62,13 @@ public class Product {
 
   @Builder
   public Product(
-      Category category,
+      Long categoryId,
       String name,
       String description,
       BigDecimal price,
       Integer stock
   ) {
-    this.category = category;
+    this.categoryId = categoryId;
     this.name = name;
     this.description = description;
     this.price = price;

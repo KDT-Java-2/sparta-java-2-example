@@ -1,22 +1,57 @@
 package com.sparta.bootcamp.java_2_example.domain.user.controller;
 
-import com.sparta.bootcamp.java_2_example.domain.user.entity.User;
+import com.sparta.bootcamp.java_2_example.common.response.ApiResponse;
+import com.sparta.bootcamp.java_2_example.domain.user.dto.UserCreateRequest;
+import com.sparta.bootcamp.java_2_example.domain.user.dto.UserResponse;
+import com.sparta.bootcamp.java_2_example.domain.user.dto.UserSearchResponse;
+import com.sparta.bootcamp.java_2_example.domain.user.dto.UserUpdateRequest;
 import com.sparta.bootcamp.java_2_example.domain.user.service.UserService;
+import jakarta.validation.Valid;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/users")
 public class UserController {
-
-  //기존 java 방식
-  //public UserService userService = new UserServiceImpl();
 
   private final UserService userService;
 
-  public UserController(UserService userService) {
-    this.userService = userService;
+  @GetMapping
+  public ApiResponse<List<UserSearchResponse>> findAll() {
+    return ApiResponse.success(userService.searchUser());
   }
 
+  @GetMapping("/{userId}")
+  public ApiResponse<UserResponse> findById(@PathVariable Long userId) {
+    return ApiResponse.success(userService.getUserById(userId));
+  }
 
-  public void save() {
-    userService.save(User.builder().build());
+  @PostMapping
+  public ApiResponse<Void> create(@Valid @RequestBody UserCreateRequest request) {
+    userService.create(request);
+    return ApiResponse.success();
+  }
+
+  @PutMapping("{userId}")
+  public ApiResponse<Void> update(@PathVariable Long userId,
+      @Valid @RequestBody UserUpdateRequest request) {
+    userService.update(userId, request);
+    return ApiResponse.success();
+  }
+
+  @DeleteMapping("{userId}")
+  public ApiResponse<Void> delete(@PathVariable Long userId) {
+    userService.delete(userId);
+    return ApiResponse.success();
   }
 
 }

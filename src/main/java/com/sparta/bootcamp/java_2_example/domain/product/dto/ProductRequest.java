@@ -26,6 +26,5 @@ public class ProductRequest {
   @NotNull
   @PositiveOrZero // 값을 양수로 혹은 0으로 제한
   Integer stock;
-
-
+  
 }

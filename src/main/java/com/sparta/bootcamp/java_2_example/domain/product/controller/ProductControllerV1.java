@@ -24,6 +24,11 @@ public class ProductControllerV1 {
 
   private final ProductService productService;
 
+  @GetMapping
+  public ResponseEntity<String> findProduct() {
+    return ResponseEntity.ok("Hello world!");
+  }
+
   // 전체 상품 조회
   @GetMapping
   public ResponseEntity<List<ProductResponse>> getAll() {

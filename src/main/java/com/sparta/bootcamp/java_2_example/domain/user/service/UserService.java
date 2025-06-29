@@ -8,9 +8,10 @@ import com.sparta.bootcamp.java_2_example.domain.user.dto.UserSearchResponse;
 import com.sparta.bootcamp.java_2_example.domain.user.dto.UserUpdateRequest;
 import com.sparta.bootcamp.java_2_example.domain.user.entity.User;
 import com.sparta.bootcamp.java_2_example.domain.user.mapper.UserMapper;
+import com.sparta.bootcamp.java_2_example.domain.user.repository.UserQueryRepository;
 import com.sparta.bootcamp.java_2_example.domain.user.repository.UserRepository;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,27 +19,31 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserService {
 
-
   private final UserMapper userMapper;
 
   private final UserRepository userRepository;
+  private final UserQueryRepository userQueryRepository;
 
   @Transactional
-  public List<UserSearchResponse> searchUser() {
-    return userRepository.findAll().stream()
-        .map(userMapper::toSearch)
-        .toList();
+  public Page<UserSearchResponse> searchUser() {
+    return null;
   }
 
   @Transactional(readOnly = true)
   public UserResponse getUserById(Long userId) {
-    return userMapper.toResponse(getUser(userId));
+    return null;
   }
 
   @Transactional
   public void create(UserCreateRequest request) {
-    userRepository.save(userMapper.toEntity(request));
-  }
+    //User user = userMapper.toEntity(request); // < --- 여기
+    // 여기까지 : 비영속
+
+    // userRepository.save(user); // <-- 여기
+    // 여기부터 : 영속 상태
+
+  } // 끝나면서 DB 퀄리 날림 & 준영속
+
 
   @Transactional
   public void update(Long userId, UserUpdateRequest request) {

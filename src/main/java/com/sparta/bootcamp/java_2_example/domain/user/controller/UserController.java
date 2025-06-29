@@ -7,8 +7,8 @@ import com.sparta.bootcamp.java_2_example.domain.user.dto.UserSearchResponse;
 import com.sparta.bootcamp.java_2_example.domain.user.dto.UserUpdateRequest;
 import com.sparta.bootcamp.java_2_example.domain.user.service.UserService;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,7 +26,7 @@ public class UserController {
   private final UserService userService;
 
   @GetMapping
-  public ApiResponse<List<UserSearchResponse>> findAll() {
+  public ApiResponse<Page<UserSearchResponse>> findAll() {
     return ApiResponse.success(userService.searchUser());
   }
 

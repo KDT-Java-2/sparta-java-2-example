@@ -31,6 +31,8 @@ public class UserService {
 
   @Transactional(readOnly = true)
   public UserResponse getUserById(Long userId) {
+    userRepository.findById(userId)
+        .orElseThrow(() -> new ServiceException(ServiceExceptionCode.NOT_FOUND_USER));
     return null;
   }
 

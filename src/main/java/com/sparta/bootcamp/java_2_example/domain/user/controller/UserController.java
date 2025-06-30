@@ -1,5 +1,6 @@
 package com.sparta.bootcamp.java_2_example.domain.user.controller;
 
+import com.sparta.bootcamp.java_2_example.common.annotation.Loggable;
 import com.sparta.bootcamp.java_2_example.common.response.ApiResponse;
 import com.sparta.bootcamp.java_2_example.domain.user.dto.UserCreateRequest;
 import com.sparta.bootcamp.java_2_example.domain.user.dto.UserResponse;
@@ -25,6 +26,7 @@ public class UserController {
 
   private final UserService userService;
 
+  @Loggable
   @GetMapping
   public ApiResponse<Page<UserSearchResponse>> findAll() {
     return ApiResponse.success(userService.searchUser());

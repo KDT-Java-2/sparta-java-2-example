@@ -2,6 +2,8 @@ package com.sparta.bootcamp.java_2_example.domain.purchase.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.sparta.bootcamp.java_2_example.common.enums.PurchaseStatus;
+import com.sparta.bootcamp.java_2_example.common.exception.ServiceException;
+import com.sparta.bootcamp.java_2_example.common.exception.ServiceExceptionCode;
 import com.sparta.bootcamp.java_2_example.domain.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,6 +22,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
@@ -47,6 +50,7 @@ public class Purchase {
   @Column(nullable = false)
   BigDecimal totalPrice;
 
+  @Setter
   @Enumerated(EnumType.STRING)
   @Column(nullable = false, length = 20)
   PurchaseStatus status;
@@ -68,5 +72,18 @@ public class Purchase {
     this.user = user;
     this.totalPrice = totalPrice;
     this.status = status;
+  }
+
+  public void setTotalPrice(BigDecimal totalPrice) {
+    if (totalPrice.compareTo(BigDecimal.ZERO) >= 0) {
+      this.totalPrice = totalPrice;
+    }
+  }
+
+  public void cancelPurchase() {
+    if (this.status != PurchaseStatus.PENDING) {
+      throw new ServiceException(ServiceExceptionCode.CANNOT_CANCEL);
+    }
+    this.status = PurchaseStatus.CANCELED;
   }
 }

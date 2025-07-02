@@ -2,8 +2,6 @@ package com.sparta.bootcamp.java_2_example.domain.purchase.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.sparta.bootcamp.java_2_example.common.enums.PurchaseStatus;
-import com.sparta.bootcamp.java_2_example.common.exception.ServiceException;
-import com.sparta.bootcamp.java_2_example.common.exception.ServiceExceptionCode;
 import com.sparta.bootcamp.java_2_example.domain.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -78,12 +76,5 @@ public class Purchase {
     if (totalPrice.compareTo(BigDecimal.ZERO) >= 0) {
       this.totalPrice = totalPrice;
     }
-  }
-
-  public void cancelPurchase() {
-    if (this.status != PurchaseStatus.PENDING) {
-      throw new ServiceException(ServiceExceptionCode.CANNOT_CANCEL);
-    }
-    this.status = PurchaseStatus.CANCELED;
   }
 }

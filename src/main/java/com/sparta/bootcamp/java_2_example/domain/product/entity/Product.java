@@ -78,4 +78,8 @@ public class Product {
   public void reduceStock(Integer quantity) {
     this.stock -= quantity;
   }
+
+  public void increaseStock(Integer quantity) {
+    this.stock += quantity;
+  }
 }

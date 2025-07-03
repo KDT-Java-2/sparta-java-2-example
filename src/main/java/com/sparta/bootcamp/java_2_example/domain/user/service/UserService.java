@@ -38,15 +38,13 @@ public class UserService {
 
   @Transactional
   public void create(UserCreateRequest request) {
-    //User user = userMapper.toEntity(request); // < --- 여기
-    // 여기까지 : 비영속
-
-    // userRepository.save(user); // <-- 여기
-    // 여기부터 : 영속 상태
-
-  } // 끝나면서 DB 퀄리 날림 & 준영속
-
-
+    userRepository.save(User.builder()
+        .name(request.getName())
+        .email(request.getEmail())
+        .passwordHash(request.getPassword()) // TODO: 패스워드 암호화 필요
+        .build());
+  }
+  
   @Transactional
   public void update(Long userId, UserUpdateRequest request) {
     User user = getUser(userId);

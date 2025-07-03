@@ -1,5 +1,6 @@
 package com.sparta.bootcamp.java_2_example.domain.purchase.service;
 
+import com.sparta.bootcamp.java_2_example.common.enums.PurchaseStatus;
 import com.sparta.bootcamp.java_2_example.common.exception.ServiceException;
 import com.sparta.bootcamp.java_2_example.common.exception.ServiceExceptionCode;
 import com.sparta.bootcamp.java_2_example.domain.product.entity.Product;
@@ -43,6 +44,8 @@ public class PurchaseProcessService {
   private Purchase createAndSavePurchase(User user) {
     return purchaseRepository.save(Purchase.builder()
         .user(user)
+        .totalPrice(BigDecimal.ZERO)
+        .status(PurchaseStatus.PENDING)
         .build());
   }
 

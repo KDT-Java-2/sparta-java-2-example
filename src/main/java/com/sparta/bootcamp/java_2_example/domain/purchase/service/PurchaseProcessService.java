@@ -11,7 +11,6 @@ import com.sparta.bootcamp.java_2_example.domain.purchase.entity.PurchaseProduct
 import com.sparta.bootcamp.java_2_example.domain.purchase.repository.PurchaseProductRepository;
 import com.sparta.bootcamp.java_2_example.domain.purchase.repository.PurchaseRepository;
 import com.sparta.bootcamp.java_2_example.domain.user.entity.User;
-import com.sparta.bootcamp.java_2_example.domain.user.repository.UserRepository;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +25,6 @@ public class PurchaseProcessService {
   private final PurchaseRepository purchaseRepository;
   private final ProductRepository productRepository;
   private final PurchaseProductRepository purchaseProductRepository;
-  private final UserRepository userRepository;
 
   @Transactional
   public Purchase process(User user, List<PurchaseProductRequest> purchaseItems) {

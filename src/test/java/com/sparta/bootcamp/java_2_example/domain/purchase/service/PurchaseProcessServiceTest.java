@@ -32,7 +32,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-@ExtendWith(MockitoExtension.class)  // @SpringBootTest 대신 사용
+@ExtendWith(MockitoExtension.class)
 class PurchaseProcessServiceTest {
 
   @InjectMocks
@@ -88,7 +88,7 @@ class PurchaseProcessServiceTest {
 
     List<PurchaseProductRequest> purchaseItems = List.of(purchaseItem);
 
-    when(productRepository.findById(1L)).thenReturn(Optional.of(testProduct));
+    when(productRepository.findById(any(Long.class))).thenReturn(Optional.of(testProduct));
     when(purchaseRepository.save(any(Purchase.class))).thenReturn(testPurchase);
     when(purchaseProductRepository.saveAll(anyList())).thenReturn(Collections.emptyList());
 

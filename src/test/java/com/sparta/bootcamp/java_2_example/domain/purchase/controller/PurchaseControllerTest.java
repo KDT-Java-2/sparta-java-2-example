@@ -5,7 +5,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sparta.bootcamp.java_2_example.domain.purchase.dto.PurchaseProductRequest;
 import com.sparta.bootcamp.java_2_example.domain.purchase.dto.PurchaseProductRequestTest;
+import com.sparta.bootcamp.java_2_example.domain.purchase.dto.PurchaseRequest;
 import com.sparta.bootcamp.java_2_example.domain.purchase.dto.PurchaseRequestTest;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +16,7 @@ import org.junit.jupiter.api.extension.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest
@@ -30,11 +33,17 @@ class PurchaseControllerTest {
   @Test
   void testCreatePurchase_Success() throws Exception {
     // given: 테스트에 사용할 요청 DTO와 JSON Body 준비
-    List<PurchaseProductRequestTest> purchaseProductRequestTests = new ArrayList<>();
-    PurchaseProductRequestTest purchaseProductRequestTest = new PurchaseProductRequestTest(1L, 10);
-    purchaseProductRequestTests.add(purchaseProductRequestTest);
+    List<PurchaseProductRequest> purchaseProductRequests = new ArrayList<>();
 
-    PurchaseRequestTest request = new PurchaseRequestTest(1L, purchaseProductRequestTests);
+    PurchaseProductRequest purchaseProductRequest = new PurchaseProductRequest();
+    ReflectionTestUtils.setField(purchaseProductRequest, "productId", 1L);
+    ReflectionTestUtils.setField(purchaseProductRequest, "quantity", 10);
+
+    purchaseProductRequests.add(purchaseProductRequest);
+
+    PurchaseRequest request = new PurchaseRequest();
+    ReflectionTestUtils.setField(request, "userId", 1L);
+    ReflectionTestUtils.setField(request, "purchaseRequest", purchaseProductRequests);
 
     String requestBody = new ObjectMapper().writeValueAsString(request);
 

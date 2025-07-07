@@ -33,8 +33,14 @@ public class PurchaseService {
 
   @Transactional
   public PurchaseCancelResponse cancel(PurchaseCancelRequest request) {
+    User user = getUser(request.getUserId(), ServiceExceptionCode.NOT_FOUND_USER);
     // user 검증은 Auth 에서 수행 했다고 가정
     return purchaseCancelService.cancelPurchase(request.getPurchaseId(), request.getUserId());
+  }
+
+  public User getUser(Long userId, ServiceExceptionCode code) {
+    return userRepository.findById(userId) // <- 기능
+        .orElseThrow(() -> new ServiceException(code)); // 결과
   }
 
 }

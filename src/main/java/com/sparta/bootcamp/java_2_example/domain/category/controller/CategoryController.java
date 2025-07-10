@@ -19,7 +19,6 @@ public class CategoryController {
 
   @PostMapping
   public ApiResponse<Void> save(@Valid @RequestBody CategoryRequest request) {
-    categoryService.save(request);
     return ApiResponse.success();
   }
 

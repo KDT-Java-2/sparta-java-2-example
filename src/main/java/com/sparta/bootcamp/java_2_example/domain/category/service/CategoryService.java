@@ -133,7 +133,19 @@ public class CategoryService {
           .categories(new ArrayList<>())
           .build();
 
-      categories.add(newCategory);
+      if (ObjectUtils.isEmpty(request.getCategoryId())) {
+        Map<Long, CategoryResponse> categoryMap = buildCategoryMap(categories);
+        CategoryResponse parentCategory = categoryMap.get(request.getCategoryId());
+
+        if (parentCategory != null) {
+          parentCategory.getCategories().add(newCategory);
+        } else {
+          categories.add(newCategory);
+        }
+
+      } else {
+        categories.add(newCategory);
+      }
 
       String jsonString = objectMapper.writeValueAsString(categories);
       jedis.setex(CACHE_KEY_CATEGORY_STRUCT, CACHE_EXPIRE_SECONDS, jsonString);
@@ -143,6 +155,18 @@ public class CategoryService {
     } catch (Exception e) {
       log.error("Write-back 패턴 저장 실패: {}", e.getMessage(), e);
     }
+  }
+
+  private Map<Long, CategoryResponse> buildCategoryMap(List<CategoryResponse> categories) {
+    return categories.stream()
+        .collect(HashMap::new,
+            (map, category) -> {
+              map.put(category.getId(), category);
+              if (category.getCategories() != null) {
+                map.putAll(buildCategoryMap(category.getCategories()));
+              }
+            },
+            HashMap::putAll);
   }
 
   @Async
@@ -161,7 +185,7 @@ public class CategoryService {
           .build();
 
       categoryRepository.save(newCategory);
-      
+
     } catch (Exception e) {
       log.error("비동기 DB 저장 실패: {}", e.getMessage(), e);
     }

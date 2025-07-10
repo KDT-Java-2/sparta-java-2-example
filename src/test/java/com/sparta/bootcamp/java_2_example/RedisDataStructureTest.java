@@ -109,7 +109,6 @@ public class RedisDataStructureTest {
     jedis.hset("user:123", "age", "31");
     log.info("User Age 업데이트: {}", jedis.hget("user:123", "age")); // 예상 출력: 31
 
-    log.info("--- Redis Hash (해시) 예제 종료 ---");
   }
 
   @Test

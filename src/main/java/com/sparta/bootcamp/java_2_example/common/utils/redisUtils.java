@@ -15,6 +15,16 @@ public class redisUtils {
   private final Jedis jedis;
   private final ObjectMapper objectMapper;
 
+  public <T> void saveObject(String key, T object) {
+    try {
+      String jsonValue = objectMapper.writeValueAsString(object);
+
+      jedis.set(key, jsonValue);
+    } catch (Exception e) {
+      log.error("[RedisService] saveObject {}c: {}", key, e.getMessage());
+    }
+  }
+
   public <T> void saveObject(String key, T object, int ttlInSeconds) {
     try {
       String jsonValue = objectMapper.writeValueAsString(object);

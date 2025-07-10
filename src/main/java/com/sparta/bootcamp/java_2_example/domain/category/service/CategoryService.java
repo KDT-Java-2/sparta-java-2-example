@@ -3,6 +3,8 @@ package com.sparta.bootcamp.java_2_example.domain.category.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sparta.bootcamp.java_2_example.common.exception.ServiceException;
+import com.sparta.bootcamp.java_2_example.common.exception.ServiceExceptionCode;
 import com.sparta.bootcamp.java_2_example.domain.category.dto.CategoryRequest;
 import com.sparta.bootcamp.java_2_example.domain.category.dto.CategoryResponse;
 import com.sparta.bootcamp.java_2_example.domain.category.entity.Category;
@@ -17,6 +19,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import redis.clients.jedis.Jedis;
 
 @Slf4j
@@ -65,43 +68,40 @@ public class CategoryService {
 
   @Transactional(readOnly = true)
   public List<CategoryResponse> findCategoryStructCacheAside() throws JsonProcessingException {
-    // 1. 캐시에서 카테고리 구조 데이터 조회 시도
     String cachedCategories = jedis.get(CACHE_KEY_CATEGORY_STRUCT);
 
-    // 2. 캐시 히트
     if (!ObjectUtils.isEmpty(cachedCategories)) {
-      System.out.println("Cache Hit: categoryStruct for key " + CACHE_KEY_CATEGORY_STRUCT);
       return objectMapper.readValue(cachedCategories, new TypeReference<>() {
       });
     }
 
-    // 3. 캐시 미스, 데이터베이스에서 조회 (findCategoryStruct() 호출)
-    System.out.println("Cache Miss: categoryStruct for key " + CACHE_KEY_CATEGORY_STRUCT);
     List<CategoryResponse> rootCategories = findCategoryStruct();
 
-    // 4. 데이터베이스에서 조회한 데이터를 캐시에 저장
     if (!ObjectUtils.isEmpty(rootCategories)) {
       String jsonString = objectMapper.writeValueAsString(rootCategories);
       jedis.setex(CACHE_KEY_CATEGORY_STRUCT, CACHE_EXPIRE_SECONDS, jsonString);
     }
 
-    return rootCategories; // 데이터베이스에서 조회한 데이터 반환
+    return rootCategories;
   }
 
   @Transactional
-  public Boolean saveWriteThrough(CategoryRequest request) {
+  public void saveWriteThrough(CategoryRequest request) {
+    Category parentCategory = null;
 
-    try {
-      Category newCategory = Category.builder().name(request.getName()).build();
-      categoryRepository.save(newCategory);
-
-      updateCategoryStructCache(); // 캐시 업데이트 메서드 호출
-      return true;
-
-    } catch (Exception e) {
-      log.error("Failed to save category with Write-through: {}", e.getMessage(), e);
-      return false;
+    if (ObjectUtils.isEmpty(request.getCategoryId())) {
+      parentCategory = categoryRepository.findById(request.getCategoryId())
+          .orElseThrow(() -> new ServiceException(ServiceExceptionCode.NOT_FOUND_DATA));
     }
+
+    Category category = Category.builder()
+        .name(request.getName())
+        .parent(parentCategory)
+        .build();
+
+    categoryRepository.save(category);
+
+    updateCategoryStructCache();
   }
 
   private void updateCategoryStructCache() {
@@ -118,21 +118,16 @@ public class CategoryService {
   }
 
   @Transactional
-  public Boolean saveWriteBack(CategoryRequest request) {
+  public void saveWriteBack(CategoryRequest request) {
     try {
-      // 1. 캐시에서 현재 카테고리 구조를 조회
       String cachedData = jedis.get(CACHE_KEY_CATEGORY_STRUCT);
-      List<CategoryResponse> categories;
+      List<CategoryResponse> categories = new ArrayList<>();
 
-      if (cachedData != null && !cachedData.isEmpty()) {
-        categories = objectMapper.readValue(cachedData,
-            new TypeReference<List<CategoryResponse>>() {
-            });
-      } else {
-        categories = new ArrayList<>();
+      if (StringUtils.hasText(cachedData)) {
+        categories = objectMapper.readValue(cachedData, new TypeReference<>() {
+        });
       }
 
-      // 2. 캐시에 새로운 카테고리 데이터 추가
       CategoryResponse newCategory = CategoryResponse.builder()
           .name(request.getName())
           .categories(new ArrayList<>())
@@ -143,30 +138,30 @@ public class CategoryService {
       String jsonString = objectMapper.writeValueAsString(categories);
       jedis.setex(CACHE_KEY_CATEGORY_STRUCT, CACHE_EXPIRE_SECONDS, jsonString);
 
-      // 3. 데이터베이스 저장 작업은 비동기로 처리
       saveToDatabaseAsync(request);
 
-      return true;
     } catch (Exception e) {
       log.error("Write-back 패턴 저장 실패: {}", e.getMessage(), e);
-      return false;
     }
   }
 
   @Async
   public void saveToDatabaseAsync(CategoryRequest request) {
     try {
-      Thread.sleep(2000);
+      Category parentCategory = null;
+
+      if (ObjectUtils.isEmpty(request.getCategoryId())) {
+        parentCategory = categoryRepository.findById(request.getCategoryId())
+            .orElseThrow(() -> new ServiceException(ServiceExceptionCode.NOT_FOUND_DATA));
+      }
 
       Category newCategory = Category.builder()
           .name(request.getName())
+          .parent(parentCategory)
           .build();
 
       categoryRepository.save(newCategory);
-
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-      log.error("비동기 DB 저장 중 스레드 인터럽트: {}", e.getMessage(), e);
+      
     } catch (Exception e) {
       log.error("비동기 DB 저장 실패: {}", e.getMessage(), e);
     }

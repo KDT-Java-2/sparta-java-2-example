@@ -28,17 +28,14 @@ public class AuthService {
     User user = userRepository.findByEmail(loginRequest.getEmail())
         .orElseThrow(() -> new ServiceException(ServiceExceptionCode.NOT_FOUND_USER));
 
-    // 패스워드 검증
     if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPasswordHash())) {
       throw new ServiceException(ServiceExceptionCode.NOT_FOUND_USER);
     }
 
-    // Spring Security 인증 처리
     Authentication authentication = authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
     );
 
-    // SecurityContext에 인증 정보 설정
     SecurityContextHolder.getContext().setAuthentication(authentication);
 
     return LoginResponse.builder()
@@ -55,7 +52,6 @@ public class AuthService {
   }
 
   public void logout() {
-    // SecurityContext 클리어
     SecurityContextHolder.clearContext();
   }
 }

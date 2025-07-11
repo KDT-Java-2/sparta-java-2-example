@@ -12,6 +12,7 @@ import com.sparta.bootcamp.java_2_example.domain.user.repository.UserQueryReposi
 import com.sparta.bootcamp.java_2_example.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,7 @@ public class UserService {
   private final UserMapper userMapper;
 
   private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
   private final UserQueryRepository userQueryRepository;
 
   @Transactional
@@ -41,10 +43,10 @@ public class UserService {
     userRepository.save(User.builder()
         .name(request.getName())
         .email(request.getEmail())
-        .passwordHash(request.getPassword()) // TODO: 패스워드 암호화 필요
+        .passwordHash(passwordEncoder.encode(request.getPassword()))
         .build());
   }
-  
+
   @Transactional
   public void update(Long userId, UserUpdateRequest request) {
     User user = getUser(userId);

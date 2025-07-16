@@ -15,12 +15,14 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -79,7 +81,7 @@ public class UserService {
   public void saveAllUsers(List<User> users) {
     String sql = "INSERT INTO user (name, email, password_hash, created_at, updated_at) VALUES (?, ?, ?, ?, ?)";
 
-    jdbcTemplate.batchUpdate(sql, users, 1000, (ps, user) -> {
+    int[][] result = jdbcTemplate.batchUpdate(sql, users, 1000, (ps, user) -> {
       LocalDateTime now = LocalDateTime.now();
       ps.setString(1, user.getName());
       ps.setString(2, user.getEmail());
@@ -87,6 +89,15 @@ public class UserService {
       ps.setTimestamp(4, Timestamp.valueOf(now));
       ps.setTimestamp(5, Timestamp.valueOf(now));
     });
+
+    // 로깅 참고용
+//    AtomicInteger totalProcessed = new AtomicInteger(0);
+//    for (int i = 0; i < result.length; i++) {
+//      int[] batchResult = result[i];
+//      int processedInBatch = Arrays.stream(batchResult).sum();
+//      totalProcessed.addAndGet(processedInBatch);
+//      log.info("{}번째 배치: {}건 처리 완료.", i + 1, batchResult.length);
+//    }
   }
 
   @Transactional

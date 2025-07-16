@@ -78,7 +78,6 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     String[] excludePaths = {
         "/api/auth/login",
         "/api/auth/logout",
-        "/api/auth/status",
         "/api/users",
         "/api/users/availability",
         "/swagger-ui",

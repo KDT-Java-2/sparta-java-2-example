@@ -23,7 +23,7 @@ public class SecurityConfig {
   private static final String[] SECURITY_EXCLUDE_PATHS = {
       "/public/**", "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**",
       "/favicon.ico", "/actuator/**", "/swagger-resources/**", "/external/**",
-      "/api/auth/**"
+      "/api/auth/**", "/api/**"
   };
 
   private final AuthenticationFilter authenticationFilter;

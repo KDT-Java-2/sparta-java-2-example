@@ -16,7 +16,7 @@ spring:
       # none: 아무 작업도 하지 않음 (운영 환경 추천)
       # create: 기존 테이블 삭제 후 다시 생성
       # update: 변경된 부분만 반영
-      ddl-auto: update
+      ddl-auto: none
     properties:
       hibernate:
         # MySQL 8 버전에 맞는 Dialect(방언) 설정
@@ -54,3 +54,8 @@ server:
 springdoc:
   swagger-ui:
     enabled: true
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+  mapper-locations: classpath:mappers/*.xml

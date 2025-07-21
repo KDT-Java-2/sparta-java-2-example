@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sparta.bootcamp.java_2_example.domain.user.repository.UserMapperRepository">
+
+  <select id="getUserById"
+    parameterType="com.sparta.bootcamp.java_2_example.domain.user.dto.UserSearchRequest"
+    resultType="com.sparta.bootcamp.java_2_example.domain.user.dto.SearchUserDto">
+    SELECT id,
+    name,
+    email,
+    password_hash,
+    created_at,
+    updated_at
+    FROM user
+
+    <where>
+      <if test="name != null">name = #{name}</if>
+      <if test="email != null">AND email = #{email}</if>
+    </where>
+
+    <where>
+      <choose>
+        <when test="name != null">name = #{name}</when>
+        <when test="email != null">email = #{email}</when>
+        <otherwise>1=1</otherwise>
+      </choose>
+    </where>
+
+  </select>
+
+  <insert id="insetUser"
+    parameterType="com.sparta.bootcamp.java_2_example.domain.user.dto.UserDto">
+    INSERT INTO user VALUES
+    <foreach collection="users" item="user" separator=",">
+      (#{user.name}, #{user.email}, #{user.passwordHash}, now(), now())
+    </foreach>
+  </insert>
+
+  <update id="updateUser"
+    parameterType="com.sparta.bootcamp.java_2_example.domain.user.dto.UserDto">
+    UPDATE user
+    SET name = #{name}
+    WHERE id = #{id}
+  </update>
+
+  <delete id="deleteUser" parameterType="Long">
+    DELETE
+    FROM user
+    WHERE id = #{id}
+  </delete>
+
+</mapper>

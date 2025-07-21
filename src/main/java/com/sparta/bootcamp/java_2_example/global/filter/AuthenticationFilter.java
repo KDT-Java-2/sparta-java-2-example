@@ -83,7 +83,8 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         "/swagger-ui",
         "/v3/api-docs",
         "/actuator",
-        "/public"
+        "/public",
+        "/api"
     };
 
     for (String excludePath : excludePaths) {

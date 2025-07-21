@@ -36,6 +36,8 @@ dependencies {
     implementation 'org.springframework.session:spring-session-data-redis'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
+
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
 
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'

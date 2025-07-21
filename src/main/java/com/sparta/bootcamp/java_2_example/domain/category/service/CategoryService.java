@@ -190,4 +190,12 @@ public class CategoryService {
       log.error("비동기 DB 저장 실패: {}", e.getMessage(), e);
     }
   }
+
+  @Transactional
+  public void save(CategoryRequest request) {
+    categoryRepository.save(Category.builder()
+        .name(request.getName())
+        .build());
+
+  }
 }

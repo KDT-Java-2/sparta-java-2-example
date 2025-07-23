@@ -81,4 +81,10 @@ public class Product {
   public void increaseStock(Integer quantity) {
     this.stock += quantity;
   }
+
+  public void setStock(Integer stock) {
+    if (stock > 0) {
+      this.stock = stock;
+    }
+  }
 }

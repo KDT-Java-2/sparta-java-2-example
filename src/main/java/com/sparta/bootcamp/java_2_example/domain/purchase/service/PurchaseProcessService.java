@@ -39,7 +39,7 @@ public class PurchaseProcessService {
   }
 
   // 각 메서드는 "어떻게 하는지" 구체적인 책임을 가진다.
-  private Purchase createAndSavePurchase(User user) {
+  public Purchase createAndSavePurchase(User user) {
     return purchaseRepository.save(Purchase.builder()
         .user(user)
         .totalPrice(BigDecimal.ZERO)
@@ -47,7 +47,7 @@ public class PurchaseProcessService {
         .build());
   }
 
-  private List<PurchaseProduct> createAndProcessPurchaseProducts(
+  public List<PurchaseProduct> createAndProcessPurchaseProducts(
       List<PurchaseProductRequest> itemRequests, Purchase purchase) {
     List<PurchaseProduct> purchaseProducts = new ArrayList<>();
 
@@ -77,7 +77,7 @@ public class PurchaseProcessService {
     }
   }
 
-  private BigDecimal calculateTotalPrice(List<PurchaseProduct> purchaseProducts) {
+  public BigDecimal calculateTotalPrice(List<PurchaseProduct> purchaseProducts) {
     return purchaseProducts.stream()
         .map(purchaseProduct -> purchaseProduct.getPrice()
             .multiply(BigDecimal.valueOf(purchaseProduct.getQuantity())))

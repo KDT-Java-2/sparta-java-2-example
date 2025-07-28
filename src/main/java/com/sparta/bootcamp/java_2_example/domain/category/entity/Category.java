@@ -11,10 +11,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
@@ -34,8 +36,13 @@ public class Category {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   Long id;
 
+  @Setter
   @Column(nullable = false)
   String name;
+
+  @Setter
+  @Column(columnDefinition = "TEXT")
+  String description;
 
   @JsonBackReference
   @ManyToOne(fetch = FetchType.LAZY)
@@ -53,10 +60,18 @@ public class Category {
   @Builder
   public Category(
       String name,
+      String description,
       Category parent
   ) {
     this.name = name;
+    this.description = description;
     this.parent = parent;
+  }
+
+  public void setParent(Category parent) {
+    if (Objects.nonNull(parent) && !this.id.equals(parent.getId())) {
+      this.parent = parent;
+    }
   }
 
 }

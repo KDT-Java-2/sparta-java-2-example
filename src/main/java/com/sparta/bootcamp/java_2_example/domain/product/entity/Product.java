@@ -16,6 +16,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
@@ -35,21 +36,30 @@ public class Product {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   Long id;
 
+  @Setter
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "category_id")
   Category category;
 
+  @Setter
   @Column(nullable = false)
   String name;
 
+  @Setter
   @Column(columnDefinition = "TEXT")
   String description;
 
+  @Setter
   @Column(nullable = false)
   BigDecimal price;
 
+  @Setter
   @Column(nullable = false)
   Integer stock;
+
+  @Setter
+  @Column(nullable = false)
+  Boolean deletedYn;
 
   @Column(nullable = false, updatable = false)
   @CreationTimestamp

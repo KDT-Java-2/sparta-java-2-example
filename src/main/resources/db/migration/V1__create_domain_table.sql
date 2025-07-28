@@ -12,11 +12,12 @@ CREATE UNIQUE INDEX unique_user_email ON user (email);
 
 CREATE TABLE category
 (
-    id         BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name       VARCHAR(255) NOT NULL,
-    parent_id  BIGINT   DEFAULT NULL COMMENT '부모 카테고리 ID (자기 참조)',
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    id          BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name        VARCHAR(255) NOT NULL,
+    description TEXT,
+    parent_id   BIGINT   DEFAULT NULL COMMENT '부모 카테고리 ID (자기 참조)',
+    created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at  DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 CREATE INDEX idx_category_parent_id ON category (parent_id);
 
@@ -28,6 +29,7 @@ CREATE TABLE product
     description TEXT,
     price       DECIMAL(10, 2) NOT NULL,
     stock       INT            NOT NULL,
+    deleted_yn  TINYINT        NOT NULL DEFAULT FALSE,
     created_at  DATETIME                DEFAULT CURRENT_TIMESTAMP,
     updated_at  datetime       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

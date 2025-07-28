@@ -33,23 +33,23 @@ public class Product {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "category_id")
-  private Category category;
+  Category category;
 
   @Column(nullable = false)
-  private String name;
+  String name;
 
   @Column(columnDefinition = "TEXT")
-  private String description;
+  String description;
 
   @Column(nullable = false)
-  private BigDecimal price;
+  BigDecimal price;
 
   @Column(nullable = false)
-  private Integer stock;
+  Integer stock;
 
   @Column(nullable = false, updatable = false)
   @CreationTimestamp

@@ -1,6 +1,5 @@
 package com.sparta.bootcamp.java_2_example.domain.purchase.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.sparta.bootcamp.java_2_example.domain.product.entity.Product;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -36,19 +35,17 @@ public class PurchaseProduct {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   Long id;
 
-  @JsonBackReference
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "purchase_id", nullable = false)
   Purchase purchase;
 
-  @JsonBackReference
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "product_id", nullable = false)
   Product product;
 
   @Column(nullable = false)
   Integer quantity;
-  
+
   @Column(nullable = false)
   BigDecimal price;
 

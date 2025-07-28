@@ -1,7 +1,7 @@
-package com.sparta.bootcamp.java_2_example.domain.purchase.entity;
+package com.sparta.bootcamp.java_2_example.domain.refund.entity;
 
-import com.sparta.bootcamp.java_2_example.common.enums.PurchaseStatus;
-import com.sparta.bootcamp.java_2_example.domain.user.entity.User;
+import com.sparta.bootcamp.java_2_example.common.enums.RefundStatus;
+import com.sparta.bootcamp.java_2_example.domain.purchase.entity.Purchase;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -13,10 +13,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -32,22 +30,22 @@ import org.hibernate.annotations.UpdateTimestamp;
 @DynamicUpdate
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Purchase {
+public class Refund {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id", nullable = false)
-  User user;
+  @JoinColumn(name = "purchase_id", nullable = false)
+  Purchase purchase;
 
-  @Column(nullable = false)
-  BigDecimal totalPrice;
+  @Column
+  String reason;
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false, length = 20)
-  PurchaseStatus status;
+  RefundStatus status;
 
   @Column(nullable = false, updatable = false)
   @CreationTimestamp
@@ -57,14 +55,4 @@ public class Purchase {
   @UpdateTimestamp
   LocalDateTime updatedAt;
 
-  @Builder
-  public Purchase(
-      User user,
-      BigDecimal totalPrice,
-      PurchaseStatus status
-  ) {
-    this.user = user;
-    this.totalPrice = totalPrice;
-    this.status = status;
-  }
 }

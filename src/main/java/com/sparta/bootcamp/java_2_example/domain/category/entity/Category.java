@@ -32,15 +32,15 @@ public class Category {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  Long id;
 
   @Column(nullable = false)
-  private String name;
+  String name;
 
   @JsonBackReference
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "parent_id")
-  private Category parent;
+  Category parent;
 
   @Column(nullable = false, updatable = false)
   @CreationTimestamp
@@ -58,5 +58,5 @@ public class Category {
     this.name = name;
     this.parent = parent;
   }
-  
+
 }

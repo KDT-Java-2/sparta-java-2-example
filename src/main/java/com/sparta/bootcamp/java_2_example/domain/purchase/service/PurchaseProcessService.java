@@ -6,25 +6,47 @@ import com.sparta.bootcamp.java_2_example.common.exception.ServiceExceptionCode;
 import com.sparta.bootcamp.java_2_example.domain.product.entity.Product;
 import com.sparta.bootcamp.java_2_example.domain.product.repository.ProductRepository;
 import com.sparta.bootcamp.java_2_example.domain.purchase.dto.PurchaseProductRequest;
+import com.sparta.bootcamp.java_2_example.domain.purchase.dto.PurchaseRequest;
 import com.sparta.bootcamp.java_2_example.domain.purchase.entity.Purchase;
 import com.sparta.bootcamp.java_2_example.domain.purchase.entity.PurchaseProduct;
 import com.sparta.bootcamp.java_2_example.domain.purchase.repository.PurchaseProductRepository;
 import com.sparta.bootcamp.java_2_example.domain.purchase.repository.PurchaseRepository;
+import com.sparta.bootcamp.java_2_example.domain.task.service.TaskQueueService;
 import com.sparta.bootcamp.java_2_example.domain.user.entity.User;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class PurchaseProcessService {
 
+  private final TaskQueueService taskQueueService;
   private final PurchaseRepository purchaseRepository;
   private final ProductRepository productRepository;
   private final PurchaseProductRepository purchaseProductRepository;
+
+  @Async
+  @Transactional(propagation = Propagation.REQUIRED)
+  public void purchaseProcess(Long taskQueueId, PurchaseRequest request, User user) {
+    taskQueueService.processQueueById(taskQueueId, (taskQueue) -> {
+      Purchase purchase = createAndSavePurchase(user);
+
+      taskQueue.setEventId(purchase.getId());
+
+      List<PurchaseProduct> purchaseProducts = createAndProcessPurchaseProducts(
+          request.getProducts(),
+          purchase);
+
+      BigDecimal totalPrice = calculateTotalPrice(purchaseProducts);
+      purchase.setTotalPrice(totalPrice);
+    });
+  }
 
   @Transactional
   public Purchase process(User user, List<PurchaseProductRequest> purchaseItems) {
@@ -39,7 +61,7 @@ public class PurchaseProcessService {
   }
 
   // 각 메서드는 "어떻게 하는지" 구체적인 책임을 가진다.
-  public Purchase createAndSavePurchase(User user) {
+  private Purchase createAndSavePurchase(User user) {
     return purchaseRepository.save(Purchase.builder()
         .user(user)
         .totalPrice(BigDecimal.ZERO)
@@ -47,7 +69,7 @@ public class PurchaseProcessService {
         .build());
   }
 
-  public List<PurchaseProduct> createAndProcessPurchaseProducts(
+  private List<PurchaseProduct> createAndProcessPurchaseProducts(
       List<PurchaseProductRequest> itemRequests, Purchase purchase) {
     List<PurchaseProduct> purchaseProducts = new ArrayList<>();
 
@@ -77,7 +99,7 @@ public class PurchaseProcessService {
     }
   }
 
-  public BigDecimal calculateTotalPrice(List<PurchaseProduct> purchaseProducts) {
+  private BigDecimal calculateTotalPrice(List<PurchaseProduct> purchaseProducts) {
     return purchaseProducts.stream()
         .map(purchaseProduct -> purchaseProduct.getPrice()
             .multiply(BigDecimal.valueOf(purchaseProduct.getQuantity())))

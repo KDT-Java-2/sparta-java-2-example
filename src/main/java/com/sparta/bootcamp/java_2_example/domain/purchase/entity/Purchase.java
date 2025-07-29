@@ -19,6 +19,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
@@ -49,6 +50,10 @@ public class Purchase {
   @Column(nullable = false, length = 20)
   PurchaseStatus status;
 
+  @Setter
+  @Column(columnDefinition = "TEXT")
+  String address;
+
   @Column(nullable = false, updatable = false)
   @CreationTimestamp
   LocalDateTime createdAt;
@@ -61,10 +66,18 @@ public class Purchase {
   public Purchase(
       User user,
       BigDecimal totalPrice,
-      PurchaseStatus status
+      PurchaseStatus status,
+      String address
   ) {
     this.user = user;
     this.totalPrice = totalPrice;
     this.status = status;
+    this.address = address;
+  }
+
+  public void updateTotalPrice(BigDecimal totalPrice) {
+    if (totalPrice.equals(BigDecimal.ZERO)) {
+      this.totalPrice = totalPrice;
+    }
   }
 }

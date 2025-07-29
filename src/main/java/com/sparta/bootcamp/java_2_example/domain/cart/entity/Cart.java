@@ -1,5 +1,7 @@
 package com.sparta.bootcamp.java_2_example.domain.cart.entity;
 
+import com.sparta.bootcamp.java_2_example.common.exception.ServiceException;
+import com.sparta.bootcamp.java_2_example.common.exception.ServiceExceptionCode;
 import com.sparta.bootcamp.java_2_example.domain.product.entity.Product;
 import com.sparta.bootcamp.java_2_example.domain.user.entity.User;
 import jakarta.persistence.Column;
@@ -13,6 +15,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -53,4 +56,25 @@ public class Cart {
   @UpdateTimestamp
   LocalDateTime updatedAt;
 
+  @Builder
+  public Cart(
+      User user,
+      Product product,
+      Integer quantity
+  ) {
+    this.user = user;
+    this.product = product;
+    this.quantity = quantity;
+  }
+
+  public void increaseQuantity(Integer quantity) {
+    this.quantity += quantity;
+  }
+
+  public void decreaseQuantity(Integer quantity) {
+    if (this.quantity < quantity) {
+      throw new ServiceException(ServiceExceptionCode.INSUFFICIENT_STOCK);
+    }
+    this.quantity -= quantity;
+  }
 }

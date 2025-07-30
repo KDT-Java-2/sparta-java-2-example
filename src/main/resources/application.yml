@@ -59,3 +59,7 @@ mybatis:
   configuration:
     map-underscore-to-camel-case: true
   mapper-locations: classpath:mappers/*.xml
+
+external:
+  external-shop:
+    url: http://localhost:3001

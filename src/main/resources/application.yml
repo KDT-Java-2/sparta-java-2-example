@@ -63,3 +63,8 @@ mybatis:
 external:
   external-shop:
     url: http://localhost:3001
+
+gemini:
+  api:
+    key: AIzaSyA90I_1GxdmcMD__NK876Z4ANF_442F2ME
+    url: https://generativelanguage.googleapis.com

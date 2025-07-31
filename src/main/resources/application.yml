@@ -66,5 +66,5 @@ external:
 
 gemini:
   api:
-    key: AIzaSyA90I_1GxdmcMD__NK876Z4ANF_442F2ME
+    key:
     url: https://generativelanguage.googleapis.com

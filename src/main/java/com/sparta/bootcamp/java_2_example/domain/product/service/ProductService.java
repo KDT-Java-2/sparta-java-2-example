@@ -23,7 +23,7 @@ public class ProductService {
   private final ProductRepository productRepository;
   private final CategoryRepository categoryRepository;
 
-  @Transactional
+  @Transactional(readOnly = true)
   public List<ProductResponse> getAll() {
     return productRepository.findAll().stream()
         .map((product -> ProductResponse.builder()

@@ -1,6 +1,7 @@
 package com.sparta.bootcamp.java_2_example.domain.product.controller;
 
 import com.sparta.bootcamp.java_2_example.common.response.ApiResponse;
+import com.sparta.bootcamp.java_2_example.domain.product.dto.ProductDiscountResponse;
 import com.sparta.bootcamp.java_2_example.domain.product.dto.ProductRequest;
 import com.sparta.bootcamp.java_2_example.domain.product.dto.ProductResponse;
 import com.sparta.bootcamp.java_2_example.domain.product.dto.ProductSearchRequest;
@@ -33,6 +34,11 @@ public class ProductController {
   @GetMapping("/{id}")
   public ApiResponse<ProductResponse> findById(@PathVariable Long id) {
     return ApiResponse.success(productService.getProductById(id));
+  }
+
+  @GetMapping("/{id}/max-discount")
+  public ApiResponse<ProductDiscountResponse> getProductByMaxDiscount(@PathVariable Long id) {
+    return ApiResponse.success(productService.getProductByMaxDiscount(id));
   }
 
   @PostMapping

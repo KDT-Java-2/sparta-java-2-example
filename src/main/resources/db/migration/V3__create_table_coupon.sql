@@ -1,19 +1,32 @@
-CREATE TABLE coupons
+CREATE TABLE coupon
 (
-    id                  BIGINT         NOT NULL PRIMARY KEY COMMENT '쿠폰 고유 ID (UUID)',
-    name                VARCHAR(255)   NOT NULL COMMENT '쿠폰명',
-    discount_type       VARCHAR(20)    NOT NULL COMMENT '할인 타입 (정률/정액)',
-    discount_value      DECIMAL(10, 2) NOT NULL COMMENT '할인율 또는 할인 금액',
-    min_order_amount    DECIMAL(10, 2) COMMENT '최소 주문 금액',
-    max_discount_amount DECIMAL(10, 2) COMMENT '최대 할인 금액 (정률 할인 시 적용)',
-    start_date          DATETIME       NOT NULL COMMENT '쿠폰 사용 시작일',
-    end_date            DATETIME       NOT NULL COMMENT '쿠폰 사용 종료일',
-    usage_limit         INT                     DEFAULT 0 COMMENT '총 사용 가능 횟수',
-    issue_count         INT            NOT NULL DEFAULT 0 COMMENT '발행된 쿠폰 수',
-    used_count          INT            NOT NULL DEFAULT 0 COMMENT '사용된 쿠폰 수',
-    created_at          DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성일시',
-    updated_at          DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일시'
+    id                  BIGINT         NOT NULL,
+    name                VARCHAR(255)   NOT NULL,
+    discount_type       VARCHAR(20)    NOT NULL,
+    discount_value      DECIMAL(10, 2) NOT NULL,
+    min_order_amount    DECIMAL(10, 2),
+    max_discount_amount DECIMAL(10, 2),
+    start_date          DATETIME       NOT NULL,
+    end_date            DATETIME       NOT NULL,
+    usage_limit         INT                     DEFAULT 0,
+    issue_count         INT            NOT NULL DEFAULT 0,
+    used_count          INT            NOT NULL DEFAULT 0,
+    created_at          DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at          DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_coupons_dates ON coupons (start_date, end_date);
-CREATE INDEX idx_coupons_created_at ON coupons (created_at);
+CREATE INDEX idx_coupons_dates ON coupon (start_date, end_date);
+CREATE INDEX idx_coupons_created_at ON coupon (created_at);
+
+
+CREATE TABLE coupon_product
+(
+    id         BIGINT   NOT NULL PRIMARY KEY,
+    coupon_id  BIGINT   NOT NULL,
+    product_id BIGINT   NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_coupon_product_coupon_id ON coupon_product (coupon_id);
+CREATE INDEX idx_coupon_product_product_id ON coupon_product (product_id);

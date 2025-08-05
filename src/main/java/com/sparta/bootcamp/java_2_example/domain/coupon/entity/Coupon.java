@@ -28,7 +28,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @DynamicUpdate
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class coupon {
+public class Coupon {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -74,7 +74,7 @@ public class coupon {
   LocalDateTime updatedAt;
 
   @Builder
-  public coupon(
+  public Coupon(
       String name,
       DiscountType discountType,
       BigDecimal discountValue,

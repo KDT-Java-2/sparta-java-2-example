@@ -13,5 +13,7 @@ public class ProductSearchRequest {
   Long categoryId;
   Integer minPrice;
   Integer maxPrice;
+  String sort; // "price", "createdAt", "rating"
+  String order; // "asc", "desc"
 
 }

@@ -33,10 +33,23 @@ public class ProductService {
   private final ProductQueryRepository productQueryRepository;
   private final CategoryRepository categoryRepository;
   private final PurchaseProductRepository purchaseProductRepository;
+  private final ProductRedisService productRedisService;
 
   @Transactional(readOnly = true)
   public Page<ProductSearchResponse> searchProduct(ProductSearchRequest searchRequest,
       Pageable pageable) {
+
+    if (searchRequest.getSort() != null && !searchRequest.getSort().isEmpty()) {
+      return productRedisService.getSortedProducts(
+          searchRequest.getSort(),
+          searchRequest.getOrder() != null ? searchRequest.getOrder() : "asc",
+          searchRequest.getCategoryId(),
+          searchRequest.getMinPrice(),
+          searchRequest.getMaxPrice(),
+          pageable
+      );
+    }
+
     return productQueryRepository.searchProduct(searchRequest, pageable);
   }
 
@@ -54,6 +67,9 @@ public class ProductService {
         .orElseThrow(() -> new ServiceException(ServiceExceptionCode.NOT_FOUND_CATEGORY));
 
     Product product = productRepository.save(productMapper.toProduct(request, category));
+
+    // Redis에 상품 추가
+    productRedisService.addProductToSortedSets(product);
 
     return ProductCreateResponse.builder()
         .productId(product.getId())
@@ -76,7 +92,12 @@ public class ProductService {
     product.setPrice(request.getPrice());
     product.setStock(request.getStock());
 
-    return productMapper.toProductResponse(productRepository.save(product));
+    Product savedProduct = productRepository.save(product);
+
+    // Redis에 상품 업데이트
+    productRedisService.addProductToSortedSets(savedProduct);
+
+    return productMapper.toProductResponse(savedProduct);
   }
 
   @Transactional

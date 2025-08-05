@@ -5,9 +5,11 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 @Getter
+@Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductSearchResponse {
 
@@ -20,6 +22,8 @@ public class ProductSearchResponse {
   Integer stock;
 
   LocalDateTime createdAt;
+
+  BigDecimal rating;
 
   @QueryProjection
   public ProductSearchResponse(

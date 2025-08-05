@@ -61,6 +61,14 @@ public class Product {
   @Column(nullable = false)
   Boolean deletedYn;
 
+  @Setter
+  @Column(precision = 3, scale = 2)
+  BigDecimal averageRating;
+
+  @Setter
+  @Column
+  Integer ratingCount;
+
   @Column(nullable = false, updatable = false)
   @CreationTimestamp
   LocalDateTime createdAt;

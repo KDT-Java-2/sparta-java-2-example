@@ -15,6 +15,7 @@ import com.sparta.bootcamp.java_2_example.domain.product.dto.ProductRequest;
 import com.sparta.bootcamp.java_2_example.domain.product.dto.ProductResponse;
 import com.sparta.bootcamp.java_2_example.domain.product.dto.ProductSearchRequest;
 import com.sparta.bootcamp.java_2_example.domain.product.dto.ProductSearchResponse;
+import com.sparta.bootcamp.java_2_example.domain.product.dto.ProductStatisticsResponse;
 import com.sparta.bootcamp.java_2_example.domain.product.dto.ProductUpdateRequest;
 import com.sparta.bootcamp.java_2_example.domain.product.entity.Product;
 import com.sparta.bootcamp.java_2_example.domain.product.mapper.ProductMapper;
@@ -208,5 +209,13 @@ public class ProductService {
     }
 
     product.setDeletedYn(true);
+  }
+
+  @Transactional(readOnly = true)
+  public ProductStatisticsResponse statistics() {
+    return ProductStatisticsResponse.builder()
+        .productCount(productRepository.count())
+        .categories(productQueryRepository.statistics())
+        .build();
   }
 }

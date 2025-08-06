@@ -1,5 +1,6 @@
 package com.sparta.bootcamp.java_2_example.domain.product.repository;
 
+import static com.sparta.bootcamp.java_2_example.domain.category.entity.QCategory.category;
 import static com.sparta.bootcamp.java_2_example.domain.product.entity.QProduct.product;
 
 import com.querydsl.core.BooleanBuilder;
@@ -8,7 +9,9 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.bootcamp.java_2_example.domain.product.dto.ProductSearchRequest;
 import com.sparta.bootcamp.java_2_example.domain.product.dto.ProductSearchResponse;
+import com.sparta.bootcamp.java_2_example.domain.product.dto.ProductStatisticsResponse.CategoryProductCount;
 import com.sparta.bootcamp.java_2_example.domain.product.dto.QProductSearchResponse;
+import com.sparta.bootcamp.java_2_example.domain.product.dto.QProductStatisticsResponse_CategoryProductCount;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
@@ -93,4 +96,21 @@ public class ProductQueryRepository {
         })
         .toArray(OrderSpecifier[]::new);
   }
+
+  public List<CategoryProductCount> statistics() {
+    return queryFactory
+        .select(new QProductStatisticsResponse_CategoryProductCount(
+            category.id,
+            category.name,
+            product.id.count(),
+            product.price.avg().coalesce(0.0)
+        ))
+        .from(category)
+        .leftJoin(product).on(product.category.eq(category)
+            .and(product.deletedYn.eq(false).or(product.deletedYn.isNull())))
+        .groupBy(category.id, category.name)
+        .orderBy(category.name.asc())
+        .fetch();
+  }
+
 }

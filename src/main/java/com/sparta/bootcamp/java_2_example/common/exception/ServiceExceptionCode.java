@@ -23,7 +23,7 @@ public enum ServiceExceptionCode {
   NOT_DELETED_CATEGORY("카테고리를 제거 할 수 없습니다."),
   NOT_FOUND_CART("장바구니 정보를 찾을 수 없습니다."),
   NOT_FOUND_COUPON("쿠폰 정보가를 찾을 수 없습니다."),
-  ;
+  EMPTY_CSV_FILE("파일이 비어있습니다.");
 
   final String message;
 }

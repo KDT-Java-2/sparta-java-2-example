@@ -32,7 +32,6 @@ public class SessionConfig {
     RedisTemplate<String, Object> template = new RedisTemplate<>();
     template.setConnectionFactory(connectionFactory());
 
-    // JDK 직렬화 사용
     template.setKeySerializer(new StringRedisSerializer());
     template.setHashKeySerializer(new StringRedisSerializer());
     template.setValueSerializer(new JdkSerializationRedisSerializer());

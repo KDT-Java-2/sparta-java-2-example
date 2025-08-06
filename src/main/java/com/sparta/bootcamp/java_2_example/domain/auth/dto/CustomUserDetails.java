@@ -12,7 +12,6 @@ public class CustomUserDetails implements UserDetails, Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  // User 엔티티 대신 필요한 정보만 저장
   private final Long userId;
   private final String email;
   private final String password;
@@ -23,7 +22,6 @@ public class CustomUserDetails implements UserDetails, Serializable {
     this.email = user.getEmail();
     this.password = user.getPassword();
 
-    // roles가 없으므로 기본 권한만 설정
     this.authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
   }
 

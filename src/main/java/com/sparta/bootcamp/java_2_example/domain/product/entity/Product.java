@@ -69,6 +69,12 @@ public class Product {
   @Column
   Integer ratingCount;
 
+  @Column
+  Long externalId;
+
+  @Column
+  Boolean externalYn;
+
   @Column(nullable = false, updatable = false)
   @CreationTimestamp
   LocalDateTime createdAt;
@@ -83,12 +89,16 @@ public class Product {
       String name,
       String description,
       BigDecimal price,
-      Integer stock
+      Integer stock,
+      Long externalId,
+      Boolean externalYn
   ) {
     this.category = category;
     this.name = name;
     this.description = description;
     this.price = price;
     this.stock = stock;
+    this.externalId = externalId;
+    this.externalYn = externalYn;
   }
 }

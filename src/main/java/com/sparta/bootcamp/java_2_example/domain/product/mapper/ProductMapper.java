@@ -31,11 +31,15 @@ public interface ProductMapper {
   @Mapping(target = "price", source = "price")
   @Mapping(target = "stock", source = "stock")
   @Mapping(target = "createdAt", source = "createdAt")
+  @Mapping(target = "rating", source = "ratingCount")
+  @Mapping(target = "isExternal", source = "externalYn")
   ProductSearchResponse toProductSearchResponse(Product product);
 
   @Mapping(target = "category", source = "category")
   @Mapping(target = "name", source = "request.name")
   @Mapping(target = "description", source = "request.description")
+  @Mapping(target = "externalId", ignore = true)
+  @Mapping(target = "externalYn", ignore = true)
   Product toProduct(ProductRequest request, Category category);
 
 }

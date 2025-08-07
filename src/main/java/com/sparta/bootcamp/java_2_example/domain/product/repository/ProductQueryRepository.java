@@ -45,6 +45,7 @@ public class ProductQueryRepository {
             product.name,
             product.price,
             product.stock,
+            product.externalYn,
             product.createdAt
         ))
         .from(product)

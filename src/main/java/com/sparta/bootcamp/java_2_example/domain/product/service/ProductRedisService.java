@@ -173,16 +173,4 @@ public class ProductRedisService {
           cacheKey, e.getMessage());
     }
   }
-
-  // 캐시 무효화 메소드 (쿠폰이나 상품 정보가 변경될 때 사용)
-  public void evictProductDiscountCache(Long productId) {
-    try {
-      String cacheKey = "product:" + productId + ":max_discount_percentage";
-      redisTemplate.delete(cacheKey);
-      log.info("Product discount cache evicted for product ID: {}", productId);
-    } catch (Exception e) {
-      log.warn("Failed to evict product discount cache for product ID: {}, error: {}",
-          productId, e.getMessage());
-    }
-  }
 } 

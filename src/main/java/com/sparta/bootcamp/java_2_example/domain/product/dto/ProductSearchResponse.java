@@ -25,18 +25,22 @@ public class ProductSearchResponse {
 
   BigDecimal rating;
 
+  Boolean isExternal;
+
   @QueryProjection
   public ProductSearchResponse(
       Long id,
       String name,
       BigDecimal price,
       Integer stock,
+      Boolean isExternal,
       LocalDateTime createdAt
   ) {
     this.id = id;
     this.name = name;
     this.price = price;
     this.stock = stock;
+    this.isExternal = isExternal;
     this.createdAt = createdAt;
   }
 }
